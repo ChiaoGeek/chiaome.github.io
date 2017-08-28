@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="chiao Chiong | 常昭| 常昭的博客">
+    <meta name="keyword"  content="常昭, Zhao Chang, Zhao Chang's Blog, 常昭的博客, Chiao Blog, 博客, 个人网站, 互联网">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>The prototype system of visual relevance analysis - Zhao Chang's Blog</title>
+
+    <link rel="canonical" href="http://localhost:4000/2016/08/10/the-prototype-system-of-visual-analysis/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Zhao Chang's Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/archives/">Archives</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/prototype/chiao-prototype.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/prototype/chiao-prototype.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#visualization" title="visualization">visualization</a>
+                        
+                        <a class="tag" href="/tags/#visual analysis" title="visual analysis">visual analysis</a>
+                        
+                        <a class="tag" href="/tags/#system design" title="system design">system design</a>
+                        
+                    </div>
+                    <h1>The prototype system of visual relevance analysis</h1>
+                    
+                    
+                    <h2 class="subheading">visual relevance analysis system for academic information</h2>
+                    
+                    <span class="meta">Posted by Zhao Chang on August 10, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<h3 id="introduction">1 Introduction</h3>
+<p>Recently, our group is working on visual relevance analysis to discover related academic information. It is important for researchers to discover related academic information when they are acquiring knowledge about a specific field, which can help them to find new ideas for research. Several platforms are available for discovering related academic information such as Google Scholar, Springer. However, they are not intuitive to represent related academic information. In this article, we proposed a visual relevance analysis system based on a Semantics-based information modeling. We mainly focus on:</p>
+
+<ol>
+  <li><em>Building an academic knowledge base (AKB) for academic information;</em></li>
+  <li><em>Developing Information search system for AKB;</em></li>
+  <li><em>Researching the method of the demonstration system of knowledge-based entity relations.</em></li>
+</ol>
+
+<h3 id="building-academic-knowledge-base">2 Building Academic knowledge Base</h3>
+<p>We employ the ontological approach to building the <strong>AKB</strong>.</p>
+
+<h4 id="ontology-description-of-akb">2.1 Ontology Description of AKB</h4>
+<p>Creation of ontology for the academic domain we have defined three top classes listed below:</p>
+
+<ul>
+  <li>
+    <p><strong>Publications</strong>: <strong>Publications</strong> class categories into three different subclasses: <em>Journals</em>, <em>Conferences</em>, <em>Dissertations</em>. <strong>Publications</strong>’s details include <em>“Title”</em>, <em>“Authors”</em>, <em>“Abstract”</em>, <em>“keywords”</em> etc.</p>
+  </li>
+  <li>
+    <p><strong>Scholars</strong>: Includes set of all author’s information. Author’s information includes general details of authors, like <em>“Name”</em>, <em>“Email address”</em>, <em>“Affiliation”</em> etc.</p>
+  </li>
+  <li>
+    <p><strong>Organizations</strong>: <strong>Organizations</strong> contain all affiliations of publications’ authors. <em>Organizations</em>’s details include <em>“Name”</em>, <em>“Location”</em>, <em>“Description”</em> etc.</p>
+  </li>
+</ul>
+
+<h4 id="relations-in-akb">2.2 Relations in AKB</h4>
+<p>We define six relations which include <em>has-Publication</em>, <em>written-By</em>, <em>works-for-Organization</em>, <em>has-Employee</em>, <em>comes-from-Organization</em>, <em>publish-publication</em> in our <strong>AKB</strong>. The Fig. 1 depicts the relations between classes.<br />
+<img src="/img/prototype/chiao-ontology.jpg" /></p>
+<center><b>Fig. 1.</b> Relation in Classes</center>
+
+<h4 id="ontology-entities">2.3 Ontology Entities</h4>
+<p>This section describes how to create entities for the <strong>AKB</strong> ontology.</p>
+
+<ul>
+  <li>
+    <p><strong>For Publications:</strong> We crawled 586,596 webpages from online Chinese academic databases such <a href="http://www.cnki.net" target="\_blank">CNKI</a>, <a href="http://www.wanfangdata.com.cn" target="\_blank">WanFangData</a>. We extracted the publication’s information (e.g. title, authors, abstract, keywords, organizations, etc.) from those webpages to create entities for publication’s class.</p>
+  </li>
+  <li>
+    <p><strong>For Scholars:</strong> We can obtain authors’ basic information (e.g. name, affiliation) from publications and use author’s information to create entities for scholar’s class.</p>
+  </li>
+  <li>
+    <p><strong>For Organizations:</strong> Similarly to <strong>Scholars</strong>, we can extract Organizations’ basic information (e.g. name) from publications to generate entities for organization’s class.</p>
+  </li>
+</ul>
+
+<h4 id="building-relations-between-entities">2.4 Building Relations Between Entities</h4>
+<p>It is one of the most important steps for realizing visual relevance analysis to build relations between entities. Already mentioned earlier, our AKB consists three main classes and six relations. Like extracting entities, we also can extract relations from the publication’s information. Each entity is assigned a globally unique <em>ID</em>. We establish relations through the properties of publications’ information such as authors, organizations. Fig. 2. shows the details.</p>
+
+<p><a href="/img/prototype/chiao-entities.jpg" target="\_blank" title="Click to see the big picture "><img src="/img/prototype/chiao-entities.jpg" /></a></p>
+<center><b>Fig. 2.</b> Building relations Between Entities</center>
+
+<h3 id="system-description">3 System description</h3>
+
+<p>In this section, I describe the overview of our visual related analysis system. Fig. 3 shows the architecture of the system. This system consists of three main components.</p>
+
+<p><a href="/img/prototype/chiao-sys-prototype.jpg" target="\_blank" title="Click to see the big picture ">
+<img src="/img/prototype/chiao-sys-prototype.jpg" />
+</a></p>
+<center><b>Fig. 3.</b> System Overview</center>
+
+<h4 id="academic-knowledge-base-akb">3.1 Academic knowledge base (AKB)</h4>
+
+<p><strong>AKB</strong> provides the ontological representation of scientific research in the field of academy. These information include <strong>Publications</strong>, <strong>scholars</strong> and <strong>organizations</strong>. Details description about AKB present in <a href="#building-academic-knowledge-base" title="section 2">Section 2</a>.</p>
+
+<h4 id="calculate-and-analyze-caa">3.2 Calculate and Analyze (CAA)</h4>
+
+<p>This module provides supports for visual relevance analysis related to a given query. CAA’s details are explained in  Section 3.3.</p>
+
+<h4 id="user-interface">3.3 User interface</h4>
+<p>The user interface provides an interactive GUI to allow the user to discover related academic information with an intuitive way. It consists of five main parts, as shown in Fig. 4, (a) Query interface, (b) Faceted navigation, (c) Knowledge card, (d) Related information, (e) Relations presentation.
+<a href="/img/prototype/chiao-ui.jpg" target="\_blank" title="Click to see the big picture ">
+<img src="/img/prototype/chiao-ui.jpg" />
+</a>
+<a href="/img/prototype/chiao-relationships.jpg" target="\_blank" title="Click to see the big picture ">
+<img src="/img/prototype/chiao-relationships.jpg" />
+</a></p>
+<center><b>Fig. 4.</b> User interface</center>
+
+<h4 id="query-interface">3.3.1 Query interface</h4>
+
+<p>The <strong>Query interface</strong> allows the user to generate queries by entering keywords and selecting search scopes. As shown in Fig. 5, the  <strong>Query interface</strong> contains four sections: <em>search scopes</em>, <em>search fields</em>, <em>input box</em> and <em>sort  menu</em>. The <em>search scopes</em> is used to select the type where the user can access such as <em>Journals</em>, <em>Conferences</em>, <em>Dissertations</em> and all of them. The <em>search fields</em> provides some fields (e.g.title, authors, abstract, organizations, etc.) where the keywords will be matched. The <em>sort menu</em> allows the user to sort the results by certain rules. Currently, this system can provide two ways of sorting, (1) relevance, (2) sensibility.
+<a href="/img/prototype/menu.jpg" target="\_blank" title="Click to see the big picture ">
+<img src="/img/prototype/menu.jpg" />
+</a></p>
+<center><b>Fig. 5.</b>Query interface</center>
+
+<h4 id="faceted-navigation">3.3.2 Faceted navigation</h4>
+
+<p>The <strong>Faceted navigation</strong>  can not only show statistical distributions of the retrieved results but also let the user narrow down the results  through interactive filter.  When the user retrieves knowledge base by keywords, the system will compute the distribution of retrieved results on structured data, which can make the user get a whole picture of the results. In order to look into the results distributed in some fields, I add a checkbox on the front of each aggregation result. The user can select one or more checkbox to filter the retrieved results.
+<a href="/img/prototype/chiao-navigation.jpg" target="\_blank" title="Click to see the big picture ">
+<img src="/img/prototype/chiao-navigation.jpg" />
+</a></p>
+<center><b>Fig. 6.</b>Faceted navigation</center>
+
+<h4 id="knowledge-card">3.3.3 Knowledge card</h4>
+
+<p>The purpose of adding a <strong>knowledge card</strong> is to provide a factual response to a query  and show a different aspects related to  a “single conceptual entity”.  The concept of <strong>knowledge card</strong> stems from <em>Google search</em>, which can help the user to discovery more deeper information.  In this system, the <strong>knowledge card</strong> contains some basic informations. For instance, a <strong>knowledge card</strong> for “INSTITUTE OF INFORMATION ENGINEERING, CAS” contains its location, level, establishment time, description, chief and research directions.
+<a href="/img/prototype/chiao-kc.jpg" target="\_blank" title="Click to see the big picture ">
+<img src="/img/prototype/chiao-kc.jpg" />
+</a></p>
+<center><b>Fig. 6.</b>Knowledge card</center>
+
+<h4 id="related-information">3.3.4 Related information</h4>
+
+<p>The <strong>related information</strong> presents related entities associated with the search results in a tag cloud. Once the result is generated, the system will produce a list of related entities. There are two steps. First is to collect the related entities of the first 100 search results. Second is to count the frequency of each related entity and single out related entities that have a high frequency.</p>
+
+<h4 id="relations-presentation">3.3.5 Relations presentation</h4>
+
+<p>The <strong>relations presentation</strong> aims to intuitively display the relations between related entities, which will help the user discover new related information quickly and easily.   This system uses Force-directed graph to visualize knowledge graph.  Taking one entity as the core of the graph, other related entities will be automatically calculated and presented. When the mouse hover on one node, the <strong>knowledge card</strong> will display specified information related to the entity. The user can access to another relations graph through clicking the link on the <strong>knowledge card</strong>.</p>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="/2016/08/10/the-prototype-system-of-visual-analysis"
+                    data-title="The prototype system of visual relevance analysis"
+                    data-url="http://localhost:4000/2016/08/10/the-prototype-system-of-visual-analysis/"
+                    data-images="http://localhost:4000/img/prototype/chiao-prototype.jpg"
+                    data-content="1 Introduction
+Recently, our group is working on visual relevance analysis to... | Zhao Chang's Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/07/09/the-real-time-statistics-system-of-data-collection/" data-toggle="tooltip" data-placement="top" title="The Real-time Statistics System of Data Collection">
+                        Previous<br>
+                        <span>The Real-time Statistics System of Data Collection</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/10/25/scholarEye/" data-toggle="tooltip" data-placement="top" title="The design of ScholarEye">
+                        Next<br>
+                        <span>The design of ScholarEye</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="/2016/08/10/the-prototype-system-of-visual-analysis"
+                        data-title="The prototype system of visual relevance analysis"
+                        data-url="http://localhost:4000/2016/08/10/the-prototype-system-of-visual-analysis/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tags/#talks" title="talks" rel="1">
+                                    talks
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Django" title="Django" rel="2">
+                                    Django
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Python" title="Python" rel="2">
+                                    Python
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Nginx" title="Nginx" rel="1">
+                                    Nginx
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#statistics" title="statistics" rel="3">
+                                    statistics
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#system" title="system" rel="3">
+                                    system
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#visualization" title="visualization" rel="5">
+                                    visualization
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#map" title="map" rel="1">
+                                    map
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#visual analysis" title="visual analysis" rel="2">
+                                    visual analysis
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#system design" title="system design" rel="2">
+                                    system design
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#tools" title="tools" rel="1">
+                                    tools
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://zhangxiaoyang.me/">爱美工的程序员</a></li>
+                    
+                        <li><a href="https://wangyb.net/">Blog - wangyb.net</a></li>
+                    
+                        <li><a href="http://igorw.org/">Igor's homepage</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'chiaome';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: "chiao" };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+                    <li>
+                        <a href="https://twitter.com/ChiaoGeek">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/2914226565">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/zhaochang001">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ChiaoGeek">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Zhao Chang's Blog 2017
+                    <br>
+                    Theme © <a href="https://github.com/huxpro">Hux</a>-><a href="https://github.com/blackrockdigital">BD</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=chiaome&repo=chiaome.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-49627206-1';
+    var _gaDomain = 'chiao.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '4cc1f2d8f3067386cc5cdb626a202900';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

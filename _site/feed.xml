@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zhao Chang's Blog</title>
+    <description>chiao Chiong | 常昭| 常昭的博客</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Tue, 21 Feb 2017 10:02:18 +0800</pubDate>
+    <lastBuildDate>Tue, 21 Feb 2017 10:02:18 +0800</lastBuildDate>
+    <generator>Jekyll v3.4.0</generator>
+    
+      <item>
+        <title>The design of ScholarEye</title>
+        <description>&lt;h3 id=&quot;introduction&quot;&gt;1 Introduction&lt;/h3&gt;
+&lt;p&gt;One month ago, we developed the &lt;a href=&quot;/2016/08/10/the-prototype-system-of-visual-analysis/&quot; target=&quot;\_blank&quot;&gt;prototype system of visual relevance analysis&lt;/a&gt; to help the user discover potential and relevant academic information. Although the &lt;a href=&quot;/2016/08/10/the-prototype-system-of-visual-analysis/&quot; target=&quot;\_blank&quot;&gt;previous system&lt;/a&gt; is available for basic functions such as retrieving academic knowledge base, discovering related entities, it has some limitations that need to be improved. I decide to redesign the visual relevance analysis system. In this article, I present my design ideas.&lt;/p&gt;
+
+&lt;p&gt;Compared to the previous system, the new system, &lt;em&gt;ScholarEye&lt;/em&gt;, enhance the ability of interaction with users. As shown in Fig. 1, there are mainly five changes in the new version:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;em&gt;Integrating all functions into a single analysis session (inspired by TextTile &lt;sup&gt;&lt;a href=&quot;#ref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt; );&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Introducing &lt;a href=&quot;https://en.wikipedia.org/wiki/Metasearch_engine&quot; target=&quot;\_blank&quot;&gt;Meta-search Engine&lt;/a&gt;;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Using drag-and-drop mechanism;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Improving the representation of entity relationship diagram;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Adding operable panel for each node.&lt;/em&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&quot;/img/scholareye/303.png&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/scholareye/303.png&quot; /&gt;
+&lt;/a&gt;
+&lt;a href=&quot;/img/scholareye/301.png&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/scholareye/301.png&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 1.&lt;/b&gt; &lt;i&gt;ScholarEye&lt;/i&gt;, an interactive tool, aims to  help the user discover potential and relevant academic information.&lt;/center&gt;
+
+&lt;h3 id=&quot;system-description&quot;&gt;2 System description&lt;/h3&gt;
+&lt;p&gt;Fig. 2 shows the architecture of &lt;em&gt;ScholarEye&lt;/em&gt;. This system consists of three main components: (a) a &lt;strong&gt;data layer&lt;/strong&gt; that provides the data sources; (b) a &lt;strong&gt;logic layer&lt;/strong&gt; that aims to provide supports for a set of visual operations; and (c) a &lt;strong&gt;user interface&lt;/strong&gt; that allows the user to analyze with an intuitive way.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/img/scholareye/sys-arch.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/scholareye/sys-arch.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 2.&lt;/b&gt; System Overview&lt;/center&gt;
+
+&lt;h4 id=&quot;data-model&quot;&gt;2.1 Data model&lt;/h4&gt;
+&lt;p&gt;In this system, &lt;strong&gt;Data layer&lt;/strong&gt; includes tow parts: (a) academic knowledge base (&lt;strong&gt;AKB&lt;/strong&gt;); (b) open-ended internet resources.&lt;/p&gt;
+
+&lt;h4 id=&quot;akb&quot;&gt;2.1.1 AKB&lt;/h4&gt;
+&lt;p&gt;We have developed an &lt;strong&gt;AKB&lt;/strong&gt; in the previous system. We plan to improve and perfect it based on the previous &lt;strong&gt;AKB&lt;/strong&gt;. We adopt  some strategies:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Adding the properties for entities via Wikipedia and &lt;a href=&quot;http://www.baidu.com&quot; target=&quot;\_balnk&quot;&gt;Baidu baike&lt;/a&gt;;&lt;/li&gt;
+  &lt;li&gt;Entity alignment using machine learning;&lt;/li&gt;
+  &lt;li&gt;Relation extraction through joint reasoning;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;open-ended-internet-resource&quot;&gt;2.1.2 Open-ended internet resource&lt;/h4&gt;
+
+&lt;p&gt;The &lt;strong&gt;AKB&lt;/strong&gt; we developed only consists of academic information. Sometimes, the user needs  access to other types  of information such as blogs, news, and E-magazine. Considering that the scope of &lt;strong&gt;AKB&lt;/strong&gt;, we plan to provide access to the &lt;strong&gt;open-ended internet resource&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;logic-layer&quot;&gt;2.2 Logic layer&lt;/h3&gt;
+&lt;p&gt;This module aims to provide supports for a set of visual operations and includes two main parts: (a) &lt;strong&gt;Query and Calculate&lt;/strong&gt; , (b) &lt;strong&gt;Meta-search engine&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;query-and-calculate&quot;&gt;2.2.1 Query and Calculate&lt;/h4&gt;
+&lt;p&gt;The part is mainly charge of  dealing with the request of the &lt;strong&gt;user interface&lt;/strong&gt; and the response of AKB. The details are explained in  Section 2.3.&lt;/p&gt;
+
+&lt;h4 id=&quot;meta-search-engine&quot;&gt;2.2.2 Meta-search engine&lt;/h4&gt;
+&lt;p&gt;We plan to embed Google search engine in &lt;em&gt;ScholarEye&lt;/em&gt; to extend data sources. When the user enters keywords in the Google search box, the entities that the retrieved results contain can be automatically recognized and labeled using named entity recognition technology. In order to automatically mark named entities, we need insert javascript codes into the response of &lt;em&gt;Google search&lt;/em&gt;. There are tow ways: (a)writing a Chrome extension; (b)building an Proxy Server. Currently, we are trying to insert javascript codes through a Proxy Server.&lt;/p&gt;
+
+&lt;h3 id=&quot;user-interface&quot;&gt;2.3 User interface&lt;/h3&gt;
+&lt;p&gt;This system interface mainly is divided into five main panels, as shown in Fig.3,  (a) menu, (b) Google search, (c) split, (d) filter, and (e) operation panels.
+&lt;a href=&quot;/img/scholareye/302.png&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/scholareye/302.png&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 3.&lt;/b&gt; User interface&lt;/center&gt;
+
+&lt;h4 id=&quot;menu&quot;&gt;2.3.1 Menu&lt;/h4&gt;
+&lt;p&gt;The &lt;strong&gt;menu&lt;/strong&gt; panel (inspired by the Mac OS X dock) provides access to such functions as  opening other application panels, saving current analysis status and restoring analysis status.
+As shown in Fig.4, there are two sections to the &lt;strong&gt;menu&lt;/strong&gt; panel - the left-hand which deals with applications, and the right-hand side which is where you will find minimized windows. To use an item in the &lt;strong&gt;menu&lt;/strong&gt; panel, click its icon. If you want to open &lt;strong&gt;Google search&lt;/strong&gt; panel, click the Google icon (the icon with  letter “G”). When an application is open, the &lt;strong&gt;menu&lt;/strong&gt; panel displays an illuminated background on the application’s icon.
+&lt;a href=&quot;/img/scholareye/304.png&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/scholareye/304.png&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 4.&lt;/b&gt;Menu&lt;/center&gt;
+
+&lt;h4 id=&quot;google-search&quot;&gt;2.3.1 Google search&lt;/h4&gt;
+&lt;p&gt;Already mentioned earlier, &lt;strong&gt;Google search&lt;/strong&gt; panel aims to embed Google search engine in this system to extend data sources. As shown in Fig. 5, when the panel is started, it displays Google search interface. The user can enter keywords in the search box to search in the whole Internet. When the results are generated, the named entities in the web page will be automatically marked by  setting an background  color. Each entity is given a drag-and-drop property, which allows the user to drag entities to the &lt;strong&gt;split&lt;/strong&gt; panel.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/img/scholareye/301.png&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/scholareye/301.png&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 5.&lt;/b&gt; Google search&lt;/center&gt;
+
+&lt;h4 id=&quot;split&quot;&gt;2.3.2 Split&lt;/h4&gt;
+&lt;p&gt;The &lt;strong&gt;split&lt;/strong&gt; panel (inspired by TextTile &lt;sup&gt;&lt;a href=&quot;#ref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt; )  displays the entities with the same name. The user can drag-and-drop an entity from the &lt;strong&gt;filter&lt;/strong&gt;, &lt;strong&gt;operation&lt;/strong&gt;, or &lt;strong&gt;Google search&lt;/strong&gt; panel onto the &lt;strong&gt;split&lt;/strong&gt; panel where the different entities stored in &lt;strong&gt;AKB&lt;/strong&gt; with the same name will be exhibited automatically, as shown in Fig. 5.&lt;/p&gt;
+
+&lt;h4 id=&quot;filter&quot;&gt;2.3.3 Filter&lt;/h4&gt;
+&lt;p&gt;The &lt;strong&gt;filter&lt;/strong&gt; panel provides access for users to retrieve &lt;strong&gt;AKB&lt;/strong&gt;. This panel can accept not only the keywords that the user enters manually but also the entities that are dragged from the &lt;strong&gt;operation&lt;/strong&gt;, &lt;strong&gt;split&lt;/strong&gt; and &lt;strong&gt;Google search&lt;/strong&gt; panel. As shown in Fig. 6, the results are divided into three categories: &lt;strong&gt;related scholars&lt;/strong&gt;, &lt;strong&gt;related papers&lt;/strong&gt;, and &lt;strong&gt;related organizations&lt;/strong&gt;.
+&lt;a href=&quot;/img/scholareye/305.png&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/scholareye/305.png&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 6.&lt;/b&gt; Filter&lt;/center&gt;
+
+&lt;h4 id=&quot;operation&quot;&gt;2.3.4 Operation&lt;/h4&gt;
+&lt;p&gt;The purpose of the &lt;strong&gt;operation&lt;/strong&gt; panel is to automatically display and analyze the relations between entities. The user can drag-and-drop entities from the &lt;strong&gt;filter&lt;/strong&gt; and &lt;strong&gt;split&lt;/strong&gt; panel onto the &lt;strong&gt;operation&lt;/strong&gt; panel which provides a series of operations, as shown in Fig. 7, to query, analyze and arrange entities.
+&lt;a href=&quot;/img/scholareye/306.png&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/scholareye/306.png&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 7.&lt;/b&gt; Operation&lt;/center&gt;
+
+&lt;h3 id=&quot;system-demo&quot;&gt;System Demo&lt;/h3&gt;
+&lt;p&gt;This slide displays a demo of the &lt;em&gt;ScholarEye&lt;/em&gt;. You can click &lt;a href=&quot;/slides/scholar-eye-demo/&quot; target=&quot;\_blank&quot;&gt;here&lt;/a&gt; to see big pictures.&lt;/p&gt;
+&lt;iframe src=&quot;/slides/scholar-eye-demo/&quot; width=&quot;100%&quot; height=&quot;521&quot; frameborder=&quot;no&quot; border=&quot;0&quot;&gt;&lt;/iframe&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+&lt;p&gt;1.&lt;a id=&quot;ref1&quot;&gt;&lt;a href=&quot;http://nyuvis.github.io/texttile/&quot;&gt;TextTile, an Interactive Visualization Tool for Seamless Exploratory Analysis of Structured Data and Unstructured Text&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 25 Oct 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2016/10/25/scholarEye/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/10/25/scholarEye/</guid>
+        
+        <category>visualization</category>
+        
+        <category>visual analysis</category>
+        
+        <category>system design</category>
+        
+        <category>tools</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>The prototype system of visual relevance analysis</title>
+        <description>&lt;h3 id=&quot;introduction&quot;&gt;1 Introduction&lt;/h3&gt;
+&lt;p&gt;Recently, our group is working on visual relevance analysis to discover related academic information. It is important for researchers to discover related academic information when they are acquiring knowledge about a specific field, which can help them to find new ideas for research. Several platforms are available for discovering related academic information such as Google Scholar, Springer. However, they are not intuitive to represent related academic information. In this article, we proposed a visual relevance analysis system based on a Semantics-based information modeling. We mainly focus on:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;em&gt;Building an academic knowledge base (AKB) for academic information;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Developing Information search system for AKB;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Researching the method of the demonstration system of knowledge-based entity relations.&lt;/em&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;building-academic-knowledge-base&quot;&gt;2 Building Academic knowledge Base&lt;/h3&gt;
+&lt;p&gt;We employ the ontological approach to building the &lt;strong&gt;AKB&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;ontology-description-of-akb&quot;&gt;2.1 Ontology Description of AKB&lt;/h4&gt;
+&lt;p&gt;Creation of ontology for the academic domain we have defined three top classes listed below:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Publications&lt;/strong&gt;: &lt;strong&gt;Publications&lt;/strong&gt; class categories into three different subclasses: &lt;em&gt;Journals&lt;/em&gt;, &lt;em&gt;Conferences&lt;/em&gt;, &lt;em&gt;Dissertations&lt;/em&gt;. &lt;strong&gt;Publications&lt;/strong&gt;’s details include &lt;em&gt;“Title”&lt;/em&gt;, &lt;em&gt;“Authors”&lt;/em&gt;, &lt;em&gt;“Abstract”&lt;/em&gt;, &lt;em&gt;“keywords”&lt;/em&gt; etc.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Scholars&lt;/strong&gt;: Includes set of all author’s information. Author’s information includes general details of authors, like &lt;em&gt;“Name”&lt;/em&gt;, &lt;em&gt;“Email address”&lt;/em&gt;, &lt;em&gt;“Affiliation”&lt;/em&gt; etc.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Organizations&lt;/strong&gt;: &lt;strong&gt;Organizations&lt;/strong&gt; contain all affiliations of publications’ authors. &lt;em&gt;Organizations&lt;/em&gt;’s details include &lt;em&gt;“Name”&lt;/em&gt;, &lt;em&gt;“Location”&lt;/em&gt;, &lt;em&gt;“Description”&lt;/em&gt; etc.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;relations-in-akb&quot;&gt;2.2 Relations in AKB&lt;/h4&gt;
+&lt;p&gt;We define six relations which include &lt;em&gt;has-Publication&lt;/em&gt;, &lt;em&gt;written-By&lt;/em&gt;, &lt;em&gt;works-for-Organization&lt;/em&gt;, &lt;em&gt;has-Employee&lt;/em&gt;, &lt;em&gt;comes-from-Organization&lt;/em&gt;, &lt;em&gt;publish-publication&lt;/em&gt; in our &lt;strong&gt;AKB&lt;/strong&gt;. The Fig. 1 depicts the relations between classes.&lt;br /&gt;
+&lt;img src=&quot;/img/prototype/chiao-ontology.jpg&quot; /&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 1.&lt;/b&gt; Relation in Classes&lt;/center&gt;
+
+&lt;h4 id=&quot;ontology-entities&quot;&gt;2.3 Ontology Entities&lt;/h4&gt;
+&lt;p&gt;This section describes how to create entities for the &lt;strong&gt;AKB&lt;/strong&gt; ontology.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;For Publications:&lt;/strong&gt; We crawled 586,596 webpages from online Chinese academic databases such &lt;a href=&quot;http://www.cnki.net&quot; target=&quot;\_blank&quot;&gt;CNKI&lt;/a&gt;, &lt;a href=&quot;http://www.wanfangdata.com.cn&quot; target=&quot;\_blank&quot;&gt;WanFangData&lt;/a&gt;. We extracted the publication’s information (e.g. title, authors, abstract, keywords, organizations, etc.) from those webpages to create entities for publication’s class.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;For Scholars:&lt;/strong&gt; We can obtain authors’ basic information (e.g. name, affiliation) from publications and use author’s information to create entities for scholar’s class.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;For Organizations:&lt;/strong&gt; Similarly to &lt;strong&gt;Scholars&lt;/strong&gt;, we can extract Organizations’ basic information (e.g. name) from publications to generate entities for organization’s class.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;building-relations-between-entities&quot;&gt;2.4 Building Relations Between Entities&lt;/h4&gt;
+&lt;p&gt;It is one of the most important steps for realizing visual relevance analysis to build relations between entities. Already mentioned earlier, our AKB consists three main classes and six relations. Like extracting entities, we also can extract relations from the publication’s information. Each entity is assigned a globally unique &lt;em&gt;ID&lt;/em&gt;. We establish relations through the properties of publications’ information such as authors, organizations. Fig. 2. shows the details.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/img/prototype/chiao-entities.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;&lt;img src=&quot;/img/prototype/chiao-entities.jpg&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 2.&lt;/b&gt; Building relations Between Entities&lt;/center&gt;
+
+&lt;h3 id=&quot;system-description&quot;&gt;3 System description&lt;/h3&gt;
+
+&lt;p&gt;In this section, I describe the overview of our visual related analysis system. Fig. 3 shows the architecture of the system. This system consists of three main components.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/img/prototype/chiao-sys-prototype.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/prototype/chiao-sys-prototype.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 3.&lt;/b&gt; System Overview&lt;/center&gt;
+
+&lt;h4 id=&quot;academic-knowledge-base-akb&quot;&gt;3.1 Academic knowledge base (AKB)&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;AKB&lt;/strong&gt; provides the ontological representation of scientific research in the field of academy. These information include &lt;strong&gt;Publications&lt;/strong&gt;, &lt;strong&gt;scholars&lt;/strong&gt; and &lt;strong&gt;organizations&lt;/strong&gt;. Details description about AKB present in &lt;a href=&quot;#building-academic-knowledge-base&quot; title=&quot;section 2&quot;&gt;Section 2&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;calculate-and-analyze-caa&quot;&gt;3.2 Calculate and Analyze (CAA)&lt;/h4&gt;
+
+&lt;p&gt;This module provides supports for visual relevance analysis related to a given query. CAA’s details are explained in  Section 3.3.&lt;/p&gt;
+
+&lt;h4 id=&quot;user-interface&quot;&gt;3.3 User interface&lt;/h4&gt;
+&lt;p&gt;The user interface provides an interactive GUI to allow the user to discover related academic information with an intuitive way. It consists of five main parts, as shown in Fig. 4, (a) Query interface, (b) Faceted navigation, (c) Knowledge card, (d) Related information, (e) Relations presentation.
+&lt;a href=&quot;/img/prototype/chiao-ui.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/prototype/chiao-ui.jpg&quot; /&gt;
+&lt;/a&gt;
+&lt;a href=&quot;/img/prototype/chiao-relationships.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/prototype/chiao-relationships.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 4.&lt;/b&gt; User interface&lt;/center&gt;
+
+&lt;h4 id=&quot;query-interface&quot;&gt;3.3.1 Query interface&lt;/h4&gt;
+
+&lt;p&gt;The &lt;strong&gt;Query interface&lt;/strong&gt; allows the user to generate queries by entering keywords and selecting search scopes. As shown in Fig. 5, the  &lt;strong&gt;Query interface&lt;/strong&gt; contains four sections: &lt;em&gt;search scopes&lt;/em&gt;, &lt;em&gt;search fields&lt;/em&gt;, &lt;em&gt;input box&lt;/em&gt; and &lt;em&gt;sort  menu&lt;/em&gt;. The &lt;em&gt;search scopes&lt;/em&gt; is used to select the type where the user can access such as &lt;em&gt;Journals&lt;/em&gt;, &lt;em&gt;Conferences&lt;/em&gt;, &lt;em&gt;Dissertations&lt;/em&gt; and all of them. The &lt;em&gt;search fields&lt;/em&gt; provides some fields (e.g.title, authors, abstract, organizations, etc.) where the keywords will be matched. The &lt;em&gt;sort menu&lt;/em&gt; allows the user to sort the results by certain rules. Currently, this system can provide two ways of sorting, (1) relevance, (2) sensibility.
+&lt;a href=&quot;/img/prototype/menu.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/prototype/menu.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 5.&lt;/b&gt;Query interface&lt;/center&gt;
+
+&lt;h4 id=&quot;faceted-navigation&quot;&gt;3.3.2 Faceted navigation&lt;/h4&gt;
+
+&lt;p&gt;The &lt;strong&gt;Faceted navigation&lt;/strong&gt;  can not only show statistical distributions of the retrieved results but also let the user narrow down the results  through interactive filter.  When the user retrieves knowledge base by keywords, the system will compute the distribution of retrieved results on structured data, which can make the user get a whole picture of the results. In order to look into the results distributed in some fields, I add a checkbox on the front of each aggregation result. The user can select one or more checkbox to filter the retrieved results.
+&lt;a href=&quot;/img/prototype/chiao-navigation.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/prototype/chiao-navigation.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 6.&lt;/b&gt;Faceted navigation&lt;/center&gt;
+
+&lt;h4 id=&quot;knowledge-card&quot;&gt;3.3.3 Knowledge card&lt;/h4&gt;
+
+&lt;p&gt;The purpose of adding a &lt;strong&gt;knowledge card&lt;/strong&gt; is to provide a factual response to a query  and show a different aspects related to  a “single conceptual entity”.  The concept of &lt;strong&gt;knowledge card&lt;/strong&gt; stems from &lt;em&gt;Google search&lt;/em&gt;, which can help the user to discovery more deeper information.  In this system, the &lt;strong&gt;knowledge card&lt;/strong&gt; contains some basic informations. For instance, a &lt;strong&gt;knowledge card&lt;/strong&gt; for “INSTITUTE OF INFORMATION ENGINEERING, CAS” contains its location, level, establishment time, description, chief and research directions.
+&lt;a href=&quot;/img/prototype/chiao-kc.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/prototype/chiao-kc.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 6.&lt;/b&gt;Knowledge card&lt;/center&gt;
+
+&lt;h4 id=&quot;related-information&quot;&gt;3.3.4 Related information&lt;/h4&gt;
+
+&lt;p&gt;The &lt;strong&gt;related information&lt;/strong&gt; presents related entities associated with the search results in a tag cloud. Once the result is generated, the system will produce a list of related entities. There are two steps. First is to collect the related entities of the first 100 search results. Second is to count the frequency of each related entity and single out related entities that have a high frequency.&lt;/p&gt;
+
+&lt;h4 id=&quot;relations-presentation&quot;&gt;3.3.5 Relations presentation&lt;/h4&gt;
+
+&lt;p&gt;The &lt;strong&gt;relations presentation&lt;/strong&gt; aims to intuitively display the relations between related entities, which will help the user discover new related information quickly and easily.   This system uses Force-directed graph to visualize knowledge graph.  Taking one entity as the core of the graph, other related entities will be automatically calculated and presented. When the mouse hover on one node, the &lt;strong&gt;knowledge card&lt;/strong&gt; will display specified information related to the entity. The user can access to another relations graph through clicking the link on the &lt;strong&gt;knowledge card&lt;/strong&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 10 Aug 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2016/08/10/the-prototype-system-of-visual-analysis/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/08/10/the-prototype-system-of-visual-analysis/</guid>
+        
+        <category>visualization</category>
+        
+        <category>visual analysis</category>
+        
+        <category>system design</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>The Real-time Statistics System of Data Collection</title>
+        <description>&lt;h3 id=&quot;development-environment&quot;&gt;Development environment&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;OS:                 Mac os X 10.95&lt;br /&gt;
+Python:           2.7&lt;br /&gt;
+Django:          1.9.4&lt;br /&gt;
+Database:        Mysql&lt;br /&gt;
+Bootstrap:       3.3.0&lt;br /&gt;
+Jquery:           2.0.0&lt;br /&gt;
+Highcharts:     5.0.2&lt;br /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;In recent project, we need collect academic information from online academic databases. We developed an distributed web crawler. In order to real-time monitor the quantity and the trend of the data collected, I made an webpage to display these informations.
+&lt;a href=&quot;/img/statistic/index.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/statistic/index.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 1.&lt;/b&gt;The Real-time Statistics System of Data Collection&lt;/center&gt;
+&lt;p&gt;&lt;a href=&quot;/img/statistic/index2.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/statistic/index2.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+
+&lt;center&gt;&lt;b&gt;Fig. 2.&lt;/b&gt;The Real-time Statistics System of Data Collection&lt;/center&gt;
+
+&lt;h3 id=&quot;system-description&quot;&gt;System description&lt;/h3&gt;
+
+&lt;p&gt;To ensure intuitiveness, comparability and  real time, I adopt the following strategies:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;each kind of crawling task is placed in one line chart; x-axis represents the quantity of data collected; y-axis represents date;&lt;/li&gt;
+  &lt;li&gt;line chart will be popped up when mouse hovers on the appropriate icon;&lt;/li&gt;
+  &lt;li&gt;every hovering will trigger an AJAX request, which ensures the data is the latest.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;/img/statistic/chart.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/statistic/chart.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+
+&lt;center&gt;&lt;b&gt;Fig. 3.&lt;/b&gt;line chart&lt;/center&gt;
+
+&lt;h3 id=&quot;limitation&quot;&gt;Limitation&lt;/h3&gt;
+
+&lt;p&gt;As shown in the Fig. 4, when there are too many categories in the line chart, the chart will be very cluttered.
+&lt;a href=&quot;/img/statistic/more-line.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/statistic/more-line.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;center&gt;&lt;b&gt;Fig. 4.&lt;/b&gt;Too many categories &lt;sup&gt;&lt;a href=&quot;#ref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;&lt;/center&gt;
+&lt;p&gt;There is one solution that we can use &lt;strong&gt;Small Multiples Time Chart&lt;/strong&gt;.
+&lt;a href=&quot;/img/statistic/multiples.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/statistic/multiples.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+
+&lt;center&gt;&lt;b&gt;Fig. 5.&lt;/b&gt; Small Multiples Time Chart &lt;sup&gt;&lt;a href=&quot;#ref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;&lt;/center&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+&lt;p&gt;1.&lt;a id=&quot;ref1&quot;&gt;&lt;a href=&quot;http://fellinlovewithdata.com/course-diary/course-diary-1-basic-charts&quot;&gt;Course Diary #1: Basic Charts&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 09 Jul 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2016/07/09/the-real-time-statistics-system-of-data-collection/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/07/09/the-real-time-statistics-system-of-data-collection/</guid>
+        
+        <category>statistics</category>
+        
+        <category>system</category>
+        
+        <category>visualization</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>The analysis and speculation system of college entrance examination of my university</title>
+        <description>&lt;h3 id=&quot;development-environment&quot;&gt;Development environment&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;OS:                 Mac os X 10.95&lt;br /&gt;
+PHP:               5.6.15&lt;br /&gt;
+Database:        Mysql&lt;br /&gt;
+Bootstrap:       3.3.0&lt;br /&gt;
+Jquery:           2.0.0&lt;br /&gt;
+Highcharts:     5.0.2&lt;br /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This system aims to assist the candidates that want to apply my university to analyze and speculate the probability of being admitted. I use line chart and bar chart to represent the situations in previous years.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/img/statistic/speculation.jpg&quot; target=&quot;\_blank&quot; title=&quot;Click to see the big picture &quot;&gt;
+&lt;img src=&quot;/img/statistic/speculation.jpg&quot; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+
+&lt;center&gt;&lt;b&gt;Fig. 1.&lt;/b&gt;The analysis and speculation system of college entrance examination of my university&lt;/center&gt;
+</description>
+        <pubDate>Sat, 09 Jul 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2016/07/09/the-analysis-and-speculation-system-of-college-entrance-examination-of-my-university/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/07/09/the-analysis-and-speculation-system-of-college-entrance-examination-of-my-university/</guid>
+        
+        <category>statistics</category>
+        
+        <category>system</category>
+        
+        <category>visualization</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>The system displaying the employer's distribution</title>
+        <description>&lt;h3 id=&quot;development-environment&quot;&gt;Development environment&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;OS:                 Mac os X 10.95&lt;br /&gt;
+PHP:               5.6.15&lt;br /&gt;
+Database:        Mysql&lt;br /&gt;
+Bootstrap:       3.3.0&lt;br /&gt;
+Jquery:           2.0.0&lt;br /&gt;
+Echarts:         3.0&lt;br /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In order to analyze the employment status, the &lt;em&gt;Student Enrollment and Employment Office&lt;/em&gt; of my university want to know about the employers’ distribution. I help them build a visual tools using the plugin named &lt;a href=&quot;http://echarts.baidu.com/&quot; target=&quot;\_blank&quot;&gt;Echarts&lt;/a&gt;&lt;/p&gt;
+
+&lt;iframe src=&quot;/iframe/map/index.html&quot; width=&quot;100%&quot; height=&quot;521&quot; frameborder=&quot;no&quot; border=&quot;0&quot;&gt;&lt;/iframe&gt;
+
+&lt;center&gt; You can click &lt;a href=&quot;/iframe/map/index.html&quot; target=&quot;\_blank&quot;&gt;here&lt;/a&gt; to see big pictures.&lt;/center&gt;
+</description>
+        <pubDate>Sat, 09 Jul 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2016/07/09/the-employer-distribution-system/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/07/09/the-employer-distribution-system/</guid>
+        
+        <category>statistics</category>
+        
+        <category>system</category>
+        
+        <category>visualization</category>
+        
+        <category>map</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Tutorial: Setting up Django and your web server with uWSGI and nginx</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;本例测试环境&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;操作系统:    ubtuntu 12.04 LTS&lt;br /&gt;
+Python:      2.7&lt;br /&gt;
+Django:     1.9.4&lt;br /&gt;
+数据库:       Mysql/14.14&lt;br /&gt;
+服务器:      Nginx/1.1.19&lt;br /&gt;
+uwsgi:      2.0.12&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Django虽然有自己的server，但是其并发性、安全性都比较差，不能应对大规模的访问。在这里引用其官网的一句话来说明自带server的目的－－It’s intended only for use while developing. (We’re in the business of making Web frameworks, not Web servers.)。所以在生产环境中必须要把Django部署到性能较好的服务器上。Django的部署可以有很多方式，采用Nginx+uwsgi的方式是其中比较常见的一种方式。本篇博客主要讲解此部署方法。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;基本概念和原理&lt;/h3&gt;
+&lt;p&gt;Web服务器面对外面的世界只能提供来自文件系统内部的文件服务，例如对客户端请求的静态文件(HTML、images、css等)进行响应。但是它不能和Django这样的应用程序进行对话。如果要想进行对话就需要某种协议作为桥梁。WSGI(Web服务网关接口)就可以承担这项任务，它是一种Python的编程协议。然而协议只是一个概念，具体的实现还需要依靠实实在在的软件。uWSGI 是WSGI的一个具体实现，通过它可以让Web服务器和Django进行通话。在这篇博客中我们将搭建uWSGI，以便用它创建了一个Unix socket,通过WSGI协议对web服务器提供响应。最后，把这几个组件连接起来就可以实现Django的部署了。示意图如下：
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Web客户端&amp;lt;---Http---&amp;gt;Web服务端&amp;lt;---socket---&amp;gt;uwsgi&amp;lt;------&amp;gt;Django&lt;/code&gt;
+接下来就开始具体实现。&lt;/p&gt;
+
+&lt;h3 id=&quot;pip&quot;&gt;安装pip&lt;/h3&gt;
+&lt;p&gt;pip 是一个安装和管理 Python 包的工具 , 是 easy_install 的一个替换品。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt-get install python-pip
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;django&quot;&gt;安装Django&lt;/h3&gt;
+&lt;p&gt;Django的安装有很多方法，既然我们前面已经安装了pip,那么本例就使用pip安装。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip install &lt;span class=&quot;nv&quot;&gt;django&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.9.4 -i http://pypi.douban.com/simple
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;：由于国内已经把pypi.python.org网站屏蔽了，所以就需要使用其他镜像，本例使用豆瓣的镜像。&lt;/p&gt;
+
+&lt;h3 id=&quot;mysql&quot;&gt;安装Mysql服务器和客户端&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt-get install mysql-server mysql-client  libmysqlclient-dev
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;：如果不安装libmysqlclient-dev的话，接下来安装 mysql-python 可能会报错。&lt;/p&gt;
+
+&lt;h3 id=&quot;mysql-python&quot;&gt;安装mysql-python&lt;/h3&gt;
+
+&lt;p&gt;安装mysql-python 是在使python 拥有操作mysql数据库的接口。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip install mysql-python -i http://pypi.douban.com/simple
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;nginx&quot;&gt;安装Nginx&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt-get install Nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;：Nginx启动/停止/重启 &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/init.d/Nginx start/stop/restart&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;uwsgi&quot;&gt;安装uwsgi&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip install uwsgi -i http://pypi.douban.com/simple
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;uwsgi-1&quot;&gt;测试uwsgi&lt;/h3&gt;
+&lt;p&gt;创建test.py文件，在文件中添加以下代码：&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start_response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;start_response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'200 OK'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Content-Type'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)])&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello World&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# python2&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;#return [b&quot;Hello World&quot;] # python3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;运行&lt;code class=&quot;highlighter-rouge&quot;&gt;uwsgi --http :8000 --wsgi-file test.py&lt;/code&gt;，然后打开浏览器输入网址&lt;code class=&quot;highlighter-rouge&quot;&gt;http://localhost:8000&lt;/code&gt;。如果页面显示hello world则测试通过，则说明下面3个环节是畅通的：&lt;code class=&quot;highlighter-rouge&quot;&gt;the web client &amp;lt;-&amp;gt; uWSGI &amp;lt;-&amp;gt; Python&lt;/code&gt;。然后进入下一步。&lt;/p&gt;
+
+&lt;h3 id=&quot;django-1&quot;&gt;测试Django项目是否正常&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python manage.py runserver 0.0.0.0:8000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;uwsgidjango&quot;&gt;使用uWSGI连接Django项目&lt;/h3&gt;
+
+&lt;p&gt;在项目的根目录建立mysite_uwsgi.ini 文件，文件内容如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# myweb_uwsgi.ini file&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;uwsgi]
+
+&lt;span class=&quot;c&quot;&gt;# Django-related settings&lt;/span&gt;
+
+socket &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 127.0.0.1:8000
+
+&lt;span class=&quot;c&quot;&gt;# the base directory (full path)&lt;/span&gt;
+chdir           &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /home/chiao/Desktop/djangotest/
+
+&lt;span class=&quot;c&quot;&gt;# Django s wsgi file&lt;/span&gt;
+module          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; djangotest.wsgi
+
+&lt;span class=&quot;c&quot;&gt;# process-related settings&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# master&lt;/span&gt;
+master          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# maximum number of worker processes&lt;/span&gt;
+processes       &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 4
+
+&lt;span class=&quot;c&quot;&gt;# ... with appropriate permissions - may be needed&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# chmod-socket    = 664&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# clear environment on exit&lt;/span&gt;
+vacuum          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#plugin = python&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;uwsgi --ini mysite_uwsg.ini&lt;/code&gt; 命令可以启动uwsgi服务。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;：如果project能够正常被拉起，说明以下环节是通的：&lt;code class=&quot;highlighter-rouge&quot;&gt;the web client &amp;lt;-&amp;gt; uWSGI &amp;lt;-&amp;gt; Django&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;nginx-1&quot;&gt;配置Nginx&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;vim /etc/Nginx/sites-available/default&lt;/code&gt;编辑该文件，并按照以下代码进行配置：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+	listen   80; &lt;span class=&quot;c&quot;&gt;## listen for ipv4; this line is default and implied&lt;/span&gt;
+	&lt;span class=&quot;c&quot;&gt;#listen   [::]:80 default ipv6only=on; ## listen for ipv6&lt;/span&gt;
+
+	&lt;span class=&quot;c&quot;&gt;#root /usr/share/Nginx/www;&lt;/span&gt;
+	&lt;span class=&quot;c&quot;&gt;#index index.html index.htm;&lt;/span&gt;
+
+	&lt;span class=&quot;c&quot;&gt;# Make site accessible from http://localhost/&lt;/span&gt;
+	server_name 127.0.0.1;
+
+	location / &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;c&quot;&gt;#include /etc/Nginx/uwsgi_params;&lt;/span&gt;
+		include uwsgi_params;
+		uwsgi_pass 127.0.0.1:8000;
+		uwsgi_read_timeout 60;
+		&lt;span class=&quot;c&quot;&gt;# First attempt to serve request as file, then&lt;/span&gt;
+		&lt;span class=&quot;c&quot;&gt;# as directory, then fall back to index.html&lt;/span&gt;
+		&lt;span class=&quot;c&quot;&gt;#try_files $uri $uri/ /index.html;&lt;/span&gt;
+		&lt;span class=&quot;c&quot;&gt;# Uncomment to enable naxsi on this location&lt;/span&gt;
+		&lt;span class=&quot;c&quot;&gt;# include /etc/Nginx/naxsi.rules&lt;/span&gt;
+	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+	location /statics&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+		expires 30d;
+		autoindex on;
+		add_header Cache-Control private;
+		&lt;span class=&quot;nb&quot;&gt;alias&lt;/span&gt; /home/chiao/Desktop/djangotest/statics/;
+	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;django-&quot;&gt;在django 中收集静态文件&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python manage.py collectstatic
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;nginx-2&quot;&gt;重启Nginx&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/nginx reload
+
+/etc/init.d/nginx restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;uwsgi-2&quot;&gt;开启uWSGI&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; uwsgi --ini mysite_uwsg.ini
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;：如果不开启则会出现502 Bad GateWay&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;以上就是整个部署过程，由于整理仓促，可能存在一些错误，欢迎各位朋友在下方留言板提出问题。&lt;/p&gt;
+</description>
+        <pubDate>Mon, 09 May 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2016/05/09/django-uwgsi-nginx-mysql-ubuntu/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/05/09/django-uwgsi-nginx-mysql-ubuntu/</guid>
+        
+        <category>Django</category>
+        
+        <category>Python</category>
+        
+        <category>Nginx</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Tutorial: Using Django's Multiple Database Support</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;本例测试环境&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;操作系统:    Mac os X 10.95&lt;br /&gt;
+Python:      2.7&lt;br /&gt;
+Django:     1.9.4&lt;br /&gt;
+数据库:       Mysql&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;最近这几天一直在做可视化相关的项目，把我们科研组的数据采集平台所采集的数据结果通过WEB平台展示出来。正常来说这点任务应该不算什么，在开发的过程中也应该不会遇到什么坑。毕竟做WEB已经3年了，虽然没做过太大的项目但是小的WEB平台也做过20个左右了。以往开发都是用php作为服务器端脚本语言，从没有改变过。但是这段时间由于在学python爬虫，所以就想用python来开发。然后就选择了比较有名的Django作为开发框架，先花了一上午时间看了一下Document,便开始写代码了。有之前thinkphp开发的经验，Django开发起来还是比较容易上手，一切都很顺利。但是在接入数据的时候出了些问题。因为有很多采集平台，数据来源不止一个数据库，这就要求在同一个APP上配置和连接多个数据库。通过查看官方文档，找到了以下解决方案。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;首先定义你的数据库&lt;/h3&gt;
+&lt;p&gt;在Django中使用多个数据库的第一步是告诉Django你将要使用哪些数据库。这一步骤通过修改&lt;code class=&quot;highlighter-rouge&quot;&gt;settings.py&lt;/code&gt;文件来实现。&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;DATABASES&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'ENGINE'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'django.db.backends.mysql'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'NAME'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'database1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'USER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'PASSWORD'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'HOST'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'192.168.120.90'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'PORT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'3306'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'alias1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'ENGINE'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'django.db.backends.mysql'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'NAME'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'database2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'USER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'PASSWORD'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'HOST'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'192.168.120.90'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'PORT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'3306'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;：数据库可以有很多别名。但是别名&lt;code class=&quot;highlighter-rouge&quot;&gt;default&lt;/code&gt;有特殊的重要性。若没有其他数据选择的时候Django将会使用&lt;code class=&quot;highlighter-rouge&quot;&gt;defalut&lt;/code&gt;数据库。所以这个数据库别名必须保留，如果没有实际功能的话可以使参数保留为空。&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;DATABASES&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'alias1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'ENGINE'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'django.db.backends.mysql'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'NAME'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'database1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'USER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'PASSWORD'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'HOST'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'192.168.120.90'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'PORT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'3306'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'alias2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'ENGINE'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'django.db.backends.mysql'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'NAME'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'database2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'USER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'PASSWORD'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'HOST'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'192.168.120.90'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'PORT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'3306'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;整合已有数据库并生成模型&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;inspectdb&lt;/code&gt;命令一次只生成一个数据库模型，默认的是生成&lt;code class=&quot;highlighter-rouge&quot;&gt;defalut&lt;/code&gt;数据库，
+但是通过&lt;code class=&quot;highlighter-rouge&quot;&gt;--database&lt;/code&gt;可选项，你可以告诉Django你想要整合哪一个数据库。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;./manage.py inspectdb &amp;gt; models.py
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;./manage.py migrate --database&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;alias1 &amp;gt; models.py
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;在视图中使用&lt;/h3&gt;
+
+&lt;p&gt;配置了多个数据库之后，当我们在查询数据库的时候就要指定具体的数据库了。Django提供&lt;code class=&quot;highlighter-rouge&quot;&gt;using()&lt;/code&gt;方法用来选择数据库。&lt;code class=&quot;highlighter-rouge&quot;&gt;using()&lt;/code&gt;方法只有一个参数：数据库的别名。
+例如：&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 选择默认数据库&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 选择默认数据库&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;using&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 选择别名为alias1的数据库&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;using&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'alias1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 06 Apr 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2016/04/06/django-multiple-databases/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/04/06/django-multiple-databases/</guid>
+        
+        <category>Django</category>
+        
+        <category>Python</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>The birth of my blog</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;一般喜欢写博客的人都会经历三个阶段。&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;第一阶段：刚刚接触blog，觉得很新鲜，试着选择一个免费空间来写。
+第二个阶段：发现免费空间限制太多，就自己购买域名和空间，搭建独立博客。
+第三阶段：觉得独立博客管理太过于麻烦，最好在保留控制权的情况下让别人来管，自己只负责写文章。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;然而到现在为止我并没有真正的经历前两个阶段。&lt;/h3&gt;
+
+&lt;p&gt;其实我最初想写东西是在2013年，那时刚刚接触计算机编程，由于当时处于自学阶段，所以需要经常去梳理知识。但是没有想过注册别人的空间去写博客，觉得那样麻烦，干脆就写在了笔记本上。2013年到2014一直在学习web开发，于是便有了想自己动手搭建博客的想法，便每月花上5刀在&lt;a href=&quot;http://www.digitalocean.com&quot; target=&quot;_blank&quot;&gt;Digitalocean&lt;/a&gt;上租了一台VPS，同时注册了&lt;a href=&quot;http://zhaochang.org&quot; target=&quot;_blank&quot;&gt;zhaochang.org&lt;/a&gt;域名准备建立自己的小站。但是爱追求完美的我，总想做一个功能强大UI漂亮的个人博客，所以一直不满意自己设计。就这样改来改去时间一长加上自己喜欢拖延它就一直没有发布。直到最近写博客的欲望变的强烈起来，于是趁着这想法还没死掉就立刻开始行动。但是实在不想继续完善之前的工作，加之又听师兄说最近几年静态博客比较火。于是便想去体验一下，就花了两天功夫系统的研究了一下，便在&lt;a href=&quot;https://github.com/chiaogeek&quot; target=&quot;_blank&quot;&gt;github&lt;/a&gt;上fork了一位大神的项目开始开发自己的博客。整个时间花了三天，虽然这三天很多事情都没有做，但是换来了一块真正属于自己的“网络空间”觉得也是值得的。在开发的过程中其他事情都比较顺利，唯独有一件事特别让我卵疼。在这里我就和大家分享一下这奇葩之事，以免遇到相同的情况。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;详述奇葩之事情&lt;/h3&gt;
+
+&lt;p&gt;由于我的静态博客是托管在&lt;a href=&quot;https://github.com/chiaogeek&quot; target=&quot;_blank&quot;&gt;github&lt;/a&gt;上的，一般来说在&lt;a href=&quot;https://github.com/chiaogeek&quot; target=&quot;_blank&quot;&gt;github&lt;/a&gt;上建立一个username.github.io的仓库，然后把网页文件push上去就可以直接通过username.github.io这个域名访问了。但是因为我有自己的域名，所以就想使用自己的域名去访问。正好github也提供这样的接口。只要在网页文件的根目录下建立一个CNAME文件，然后添加自己的域名。并把自己的域名CNAME到username.github.io域名上就可以实现个人域名绑定了。于是我按照github官方的说法去做，把&lt;a href=&quot;http://chiao.me&quot; target=&quot;_blank&quot;&gt;chiao.me&lt;/a&gt;这个主域名绑定到了username.github.io上。但是当我访问&lt;a href=&quot;http://chiao.me&quot; target=&quot;_blank&quot;&gt;chiao.me&lt;/a&gt;的时候，网页跳转到了别人的博客上。我重新检查了我的每一步操作，确定没有问题。然后我就将我的域名解析做了如下测试：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;域名&lt;/td&gt;
+      &lt;td&gt;解析类型&lt;/td&gt;
+      &lt;td&gt;映射地址&lt;/td&gt;
+      &lt;td&gt;解析状态&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;chiao.me&lt;/td&gt;
+      &lt;td&gt;CNAME&lt;/td&gt;
+      &lt;td&gt;chiaogeek.github.io&lt;/td&gt;
+      &lt;td&gt;跳转到jessechiao.github.io&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;chiao.me&lt;/td&gt;
+      &lt;td&gt;CNAME&lt;/td&gt;
+      &lt;td&gt;chiaogeek.github.io&lt;/td&gt;
+      &lt;td&gt;成功跳转&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;chiao.me&lt;/td&gt;
+      &lt;td&gt;A&lt;/td&gt;
+      &lt;td&gt;45.33.124.14&lt;/td&gt;
+      &lt;td&gt;成功跳转&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;www.chiao.me&lt;/td&gt;
+      &lt;td&gt;CNAME&lt;/td&gt;
+      &lt;td&gt;chiaogeek.github.io&lt;/td&gt;
+      &lt;td&gt;跳转到jessechiao.github.io&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;blog.chiao.me&lt;/td&gt;
+      &lt;td&gt;CNAME&lt;/td&gt;
+      &lt;td&gt;chiaogeek.github.io&lt;/td&gt;
+      &lt;td&gt;成功跳转&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;这个实验可以说明我的域名服务商肯定没有问题，问题应该出在guthub对&lt;a href=&quot;http://chiao.me&quot; target=&quot;_blank&quot;&gt;chiao.me&lt;/a&gt; 和 &lt;a href=&quot;http://chiao.me&quot; target=&quot;_blank&quot;&gt;www.chiao.me&lt;/a&gt;两个域名的解析上。于是我浏览了&lt;a href=&quot;http://jessechiao.github.io&quot; target=&quot;_blank&quot;&gt;jessechiao.github.io&lt;/a&gt;这个仓库发现有一个CNAME文件，然后点进去是&lt;a href=&quot;http://chiao.me&quot; target=&quot;_blank&quot;&gt;chiao.me&lt;/a&gt;这个域名。我瞬间就明白了这个域名原来是属于一个叫Jesse Chiao的哥们。但是觉得即使它的CNAME文件中是&lt;a href=&quot;http://chiao.me&quot; target=&quot;_blank&quot;&gt;chiao.me&lt;/a&gt;这个域名，也不应该跳到他的博客上，因为我解析的明明是&lt;a href=&quot;http://chiaogeek.github.io&quot;&gt;chiaogeek.github.io&lt;/a&gt;。所以去了&lt;a href=&quot;https://github.com/chiaogeek&quot; target=&quot;_blank&quot;&gt;github&lt;/a&gt;官网求解决方案。找到了如下说明。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;真相大白&lt;/h3&gt;
+
+&lt;p&gt;原来一个域名只能对应一个文件，既然知道了原因就可以解决了。由于我没有权限删除别人的文件，所以就主动联系了&lt;a href=&quot;https://github.com/chiaogeek&quot; target=&quot;_blank&quot;&gt;github&lt;/a&gt;的帮助中心说明了我的遭遇。我按照他们的要求做了一个TXT记录，证明这个域名现在确实属于我，然后他们帮我移除了。这件奇葩之事便解决了。&lt;/p&gt;
+</description>
+        <pubDate>Wed, 23 Mar 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2016/03/23/blog-birth-note/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/03/23/blog-birth-note/</guid>
+        
+        <category>talks</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

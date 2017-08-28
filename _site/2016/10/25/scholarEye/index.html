@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="chiao Chiong | 常昭| 常昭的博客">
+    <meta name="keyword"  content="常昭, Zhao Chang, Zhao Chang's Blog, 常昭的博客, Chiao Blog, 博客, 个人网站, 互联网">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>The design of ScholarEye - Zhao Chang's Blog</title>
+
+    <link rel="canonical" href="http://localhost:4000/2016/10/25/scholarEye/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Zhao Chang's Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/archives/">Archives</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/prototype/network.png" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/prototype/network.png')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#visualization" title="visualization">visualization</a>
+                        
+                        <a class="tag" href="/tags/#visual analysis" title="visual analysis">visual analysis</a>
+                        
+                        <a class="tag" href="/tags/#system design" title="system design">system design</a>
+                        
+                        <a class="tag" href="/tags/#tools" title="tools">tools</a>
+                        
+                    </div>
+                    <h1>The design of ScholarEye</h1>
+                    
+                    
+                    <h2 class="subheading">a tool of visual relevance analysis for academic information</h2>
+                    
+                    <span class="meta">Posted by Zhao Chang on October 25, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<h3 id="introduction">1 Introduction</h3>
+<p>One month ago, we developed the <a href="/2016/08/10/the-prototype-system-of-visual-analysis/" target="\_blank">prototype system of visual relevance analysis</a> to help the user discover potential and relevant academic information. Although the <a href="/2016/08/10/the-prototype-system-of-visual-analysis/" target="\_blank">previous system</a> is available for basic functions such as retrieving academic knowledge base, discovering related entities, it has some limitations that need to be improved. I decide to redesign the visual relevance analysis system. In this article, I present my design ideas.</p>
+
+<p>Compared to the previous system, the new system, <em>ScholarEye</em>, enhance the ability of interaction with users. As shown in Fig. 1, there are mainly five changes in the new version:</p>
+
+<ol>
+  <li><em>Integrating all functions into a single analysis session (inspired by TextTile <sup><a href="#ref1">[1]</a></sup> );</em></li>
+  <li><em>Introducing <a href="https://en.wikipedia.org/wiki/Metasearch_engine" target="\_blank">Meta-search Engine</a>;</em></li>
+  <li><em>Using drag-and-drop mechanism;</em></li>
+  <li><em>Improving the representation of entity relationship diagram;</em></li>
+  <li><em>Adding operable panel for each node.</em></li>
+</ol>
+
+<p><a href="/img/scholareye/303.png" target="\_blank" title="Click to see the big picture ">
+<img src="/img/scholareye/303.png" />
+</a>
+<a href="/img/scholareye/301.png" target="\_blank" title="Click to see the big picture ">
+<img src="/img/scholareye/301.png" />
+</a></p>
+<center><b>Fig. 1.</b> <i>ScholarEye</i>, an interactive tool, aims to  help the user discover potential and relevant academic information.</center>
+
+<h3 id="system-description">2 System description</h3>
+<p>Fig. 2 shows the architecture of <em>ScholarEye</em>. This system consists of three main components: (a) a <strong>data layer</strong> that provides the data sources; (b) a <strong>logic layer</strong> that aims to provide supports for a set of visual operations; and (c) a <strong>user interface</strong> that allows the user to analyze with an intuitive way.</p>
+
+<p><a href="/img/scholareye/sys-arch.jpg" target="\_blank" title="Click to see the big picture ">
+<img src="/img/scholareye/sys-arch.jpg" />
+</a></p>
+<center><b>Fig. 2.</b> System Overview</center>
+
+<h4 id="data-model">2.1 Data model</h4>
+<p>In this system, <strong>Data layer</strong> includes tow parts: (a) academic knowledge base (<strong>AKB</strong>); (b) open-ended internet resources.</p>
+
+<h4 id="akb">2.1.1 AKB</h4>
+<p>We have developed an <strong>AKB</strong> in the previous system. We plan to improve and perfect it based on the previous <strong>AKB</strong>. We adopt  some strategies:</p>
+
+<ol>
+  <li>Adding the properties for entities via Wikipedia and <a href="http://www.baidu.com" target="\_balnk">Baidu baike</a>;</li>
+  <li>Entity alignment using machine learning;</li>
+  <li>Relation extraction through joint reasoning;</li>
+</ol>
+
+<h4 id="open-ended-internet-resource">2.1.2 Open-ended internet resource</h4>
+
+<p>The <strong>AKB</strong> we developed only consists of academic information. Sometimes, the user needs  access to other types  of information such as blogs, news, and E-magazine. Considering that the scope of <strong>AKB</strong>, we plan to provide access to the <strong>open-ended internet resource</strong>.</p>
+
+<h3 id="logic-layer">2.2 Logic layer</h3>
+<p>This module aims to provide supports for a set of visual operations and includes two main parts: (a) <strong>Query and Calculate</strong> , (b) <strong>Meta-search engine</strong>.</p>
+
+<h4 id="query-and-calculate">2.2.1 Query and Calculate</h4>
+<p>The part is mainly charge of  dealing with the request of the <strong>user interface</strong> and the response of AKB. The details are explained in  Section 2.3.</p>
+
+<h4 id="meta-search-engine">2.2.2 Meta-search engine</h4>
+<p>We plan to embed Google search engine in <em>ScholarEye</em> to extend data sources. When the user enters keywords in the Google search box, the entities that the retrieved results contain can be automatically recognized and labeled using named entity recognition technology. In order to automatically mark named entities, we need insert javascript codes into the response of <em>Google search</em>. There are tow ways: (a)writing a Chrome extension; (b)building an Proxy Server. Currently, we are trying to insert javascript codes through a Proxy Server.</p>
+
+<h3 id="user-interface">2.3 User interface</h3>
+<p>This system interface mainly is divided into five main panels, as shown in Fig.3,  (a) menu, (b) Google search, (c) split, (d) filter, and (e) operation panels.
+<a href="/img/scholareye/302.png" target="\_blank" title="Click to see the big picture ">
+<img src="/img/scholareye/302.png" />
+</a></p>
+<center><b>Fig. 3.</b> User interface</center>
+
+<h4 id="menu">2.3.1 Menu</h4>
+<p>The <strong>menu</strong> panel (inspired by the Mac OS X dock) provides access to such functions as  opening other application panels, saving current analysis status and restoring analysis status.
+As shown in Fig.4, there are two sections to the <strong>menu</strong> panel - the left-hand which deals with applications, and the right-hand side which is where you will find minimized windows. To use an item in the <strong>menu</strong> panel, click its icon. If you want to open <strong>Google search</strong> panel, click the Google icon (the icon with  letter “G”). When an application is open, the <strong>menu</strong> panel displays an illuminated background on the application’s icon.
+<a href="/img/scholareye/304.png" target="\_blank" title="Click to see the big picture ">
+<img src="/img/scholareye/304.png" />
+</a></p>
+<center><b>Fig. 4.</b>Menu</center>
+
+<h4 id="google-search">2.3.1 Google search</h4>
+<p>Already mentioned earlier, <strong>Google search</strong> panel aims to embed Google search engine in this system to extend data sources. As shown in Fig. 5, when the panel is started, it displays Google search interface. The user can enter keywords in the search box to search in the whole Internet. When the results are generated, the named entities in the web page will be automatically marked by  setting an background  color. Each entity is given a drag-and-drop property, which allows the user to drag entities to the <strong>split</strong> panel.</p>
+
+<p><a href="/img/scholareye/301.png" target="\_blank" title="Click to see the big picture ">
+<img src="/img/scholareye/301.png" />
+</a></p>
+<center><b>Fig. 5.</b> Google search</center>
+
+<h4 id="split">2.3.2 Split</h4>
+<p>The <strong>split</strong> panel (inspired by TextTile <sup><a href="#ref1">[1]</a></sup> )  displays the entities with the same name. The user can drag-and-drop an entity from the <strong>filter</strong>, <strong>operation</strong>, or <strong>Google search</strong> panel onto the <strong>split</strong> panel where the different entities stored in <strong>AKB</strong> with the same name will be exhibited automatically, as shown in Fig. 5.</p>
+
+<h4 id="filter">2.3.3 Filter</h4>
+<p>The <strong>filter</strong> panel provides access for users to retrieve <strong>AKB</strong>. This panel can accept not only the keywords that the user enters manually but also the entities that are dragged from the <strong>operation</strong>, <strong>split</strong> and <strong>Google search</strong> panel. As shown in Fig. 6, the results are divided into three categories: <strong>related scholars</strong>, <strong>related papers</strong>, and <strong>related organizations</strong>.
+<a href="/img/scholareye/305.png" target="\_blank" title="Click to see the big picture ">
+<img src="/img/scholareye/305.png" />
+</a></p>
+<center><b>Fig. 6.</b> Filter</center>
+
+<h4 id="operation">2.3.4 Operation</h4>
+<p>The purpose of the <strong>operation</strong> panel is to automatically display and analyze the relations between entities. The user can drag-and-drop entities from the <strong>filter</strong> and <strong>split</strong> panel onto the <strong>operation</strong> panel which provides a series of operations, as shown in Fig. 7, to query, analyze and arrange entities.
+<a href="/img/scholareye/306.png" target="\_blank" title="Click to see the big picture ">
+<img src="/img/scholareye/306.png" />
+</a></p>
+<center><b>Fig. 7.</b> Operation</center>
+
+<h3 id="system-demo">System Demo</h3>
+<p>This slide displays a demo of the <em>ScholarEye</em>. You can click <a href="/slides/scholar-eye-demo/" target="\_blank">here</a> to see big pictures.</p>
+<iframe src="/slides/scholar-eye-demo/" width="100%" height="521" frameborder="no" border="0"></iframe>
+
+<h3 id="references">References</h3>
+<p>1.<a id="ref1"><a href="http://nyuvis.github.io/texttile/">TextTile, an Interactive Visualization Tool for Seamless Exploratory Analysis of Structured Data and Unstructured Text</a></a></p>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="/2016/10/25/scholarEye"
+                    data-title="The design of ScholarEye"
+                    data-url="http://localhost:4000/2016/10/25/scholarEye/"
+                    data-images="http://localhost:4000/img/prototype/network.png"
+                    data-content="1 Introduction
+One month ago, we developed the prototype system of visual rel... | Zhao Chang's Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/08/10/the-prototype-system-of-visual-analysis/" data-toggle="tooltip" data-placement="top" title="The prototype system of visual relevance analysis">
+                        Previous<br>
+                        <span>The prototype system of visual relevance analysis</span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="/2016/10/25/scholarEye"
+                        data-title="The design of ScholarEye"
+                        data-url="http://localhost:4000/2016/10/25/scholarEye/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tags/#talks" title="talks" rel="1">
+                                    talks
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Django" title="Django" rel="2">
+                                    Django
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Python" title="Python" rel="2">
+                                    Python
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Nginx" title="Nginx" rel="1">
+                                    Nginx
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#statistics" title="statistics" rel="3">
+                                    statistics
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#system" title="system" rel="3">
+                                    system
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#visualization" title="visualization" rel="5">
+                                    visualization
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#map" title="map" rel="1">
+                                    map
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#visual analysis" title="visual analysis" rel="2">
+                                    visual analysis
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#system design" title="system design" rel="2">
+                                    system design
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#tools" title="tools" rel="1">
+                                    tools
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://zhangxiaoyang.me/">爱美工的程序员</a></li>
+                    
+                        <li><a href="https://wangyb.net/">Blog - wangyb.net</a></li>
+                    
+                        <li><a href="http://igorw.org/">Igor's homepage</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'chiaome';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: "chiao" };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+                    <li>
+                        <a href="https://twitter.com/ChiaoGeek">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/2914226565">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/zhaochang001">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/ChiaoGeek">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Zhao Chang's Blog 2017
+                    <br>
+                    Theme © <a href="https://github.com/huxpro">Hux</a>-><a href="https://github.com/blackrockdigital">BD</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=chiaome&repo=chiaome.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-49627206-1';
+    var _gaDomain = 'chiao.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '4cc1f2d8f3067386cc5cdb626a202900';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
